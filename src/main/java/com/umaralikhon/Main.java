@@ -1,12 +1,11 @@
 package com.umaralikhon;
 
-import java.io.IOException;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+@SpringBootApplication
 public class Main {
-    public static void main(String ... args) throws IOException {
-        ExcelCreator excelCreator = new ExcelCreator();
-        excelCreator.fillRows();
-
-        ExcelReader.readFromExcel("File.xls");
+    public static void main(String ... args){
+        SpringApplication.run(Main.class, args);
     }
 }
