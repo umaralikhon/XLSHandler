@@ -54,6 +54,7 @@ public class DboController {
         header.add("Expires", "0");
 
         Path path = Paths.get(file.getAbsolutePath());
+
         ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
 
         return ResponseEntity.ok()
