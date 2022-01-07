@@ -8,7 +8,7 @@ import java.util.Date;
 @Entity
 @Table(name = "dbo_users")
 @Data
-public class DboUsers {
+public class DboUsers extends DboBaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

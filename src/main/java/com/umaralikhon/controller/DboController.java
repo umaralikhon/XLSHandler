@@ -3,7 +3,6 @@ package com.umaralikhon.controller;
 import com.umaralikhon.model.DboRepository;
 import com.umaralikhon.model.DboUsers;
 import com.umaralikhon.service.XLSXHandler;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
@@ -16,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -40,23 +40,15 @@ public class DboController {
         return dboRepository.findAll();
     }
 
-    @GetMapping("/excel")
-    public void createExcel() {
-        try {
-            xlsxHandler.writeIntoExcel("TestFile.xlsx");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    private static String SERVER_LOCATION = "files/dbo/dbo.xlsx";
 
-    private static String SERVER_LOCATION = "E:\\Pro\\XLSHandler\\";
-
-    @GetMapping("/download/{name}")
-    public ResponseEntity<?> download(@PathVariable String name) throws IOException {
-        File file = new File(SERVER_LOCATION + File.separator + name);
+    @GetMapping("/download")
+    public ResponseEntity<?> download() throws IOException, ParseException {
+        xlsxHandler.writeIntoExcel();
+        File file = new File(SERVER_LOCATION + File.separator);
 
         HttpHeaders header = new HttpHeaders();
-        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + name);
+        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + "dbo.xlsx");
         header.add("Cache-Control", "no-cache, no-store, must-revalidate");
         header.add("Pragma", "no-cache");
         header.add("Expires", "0");

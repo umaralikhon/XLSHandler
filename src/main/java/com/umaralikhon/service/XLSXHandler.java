@@ -2,12 +2,13 @@ package com.umaralikhon.service;
 
 import com.umaralikhon.model.DboRepository;
 import com.umaralikhon.model.DboUsers;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Service
@@ -20,9 +21,8 @@ public class XLSXHandler {
     }
 
     @SuppressWarnings("deprecation")
-    public void writeIntoExcel(String file) throws IOException {
+    public void writeIntoExcel() throws IOException, ParseException {
 
-//        FileInputStream excelFile = new FileInputStream(new File(file));
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet();
         int rowIndex = 1;
@@ -36,45 +36,43 @@ public class XLSXHandler {
         sheet.getRow(0).createCell(4).setCellValue("Логин");
         sheet.getRow(0).createCell(5).setCellValue("Дата");
 
-        for(DboUsers users : dboUsers){
-            sheet.createRow(rowIndex);
+        for(DboUsers users : dboUsers) {
 
-            sheet.getRow(rowIndex).createCell(0);
-            sheet.getRow(rowIndex).getCell(0).setCellStyle(bordered(workbook));
-            sheet.getRow(rowIndex).getCell(0).setCellValue(users.getCustomerId());
+            if (users.getZStatus().name().equals("ACTIVE")) {
+                sheet.createRow(rowIndex);
 
-            sheet.getRow(rowIndex).createCell(1);
-            sheet.getRow(rowIndex).getCell(1).setCellStyle(bordered(workbook));
-            sheet.getRow(rowIndex).getCell(1).setCellValue(users.getFirstname());
+                sheet.getRow(rowIndex).createCell(0);
+                sheet.getRow(rowIndex).getCell(0).setCellStyle(bordered(workbook));
+                sheet.getRow(rowIndex).getCell(0).setCellValue(users.getCustomerId());
 
-            sheet.getRow(rowIndex).createCell(2);
-            sheet.getRow(rowIndex).getCell(2).setCellStyle(bordered(workbook));
-            sheet.getRow(rowIndex).getCell(2).setCellValue(users.getLastname());
+                sheet.getRow(rowIndex).createCell(1);
+                sheet.getRow(rowIndex).getCell(1).setCellStyle(bordered(workbook));
+                sheet.getRow(rowIndex).getCell(1).setCellValue(users.getFirstname());
 
-            sheet.getRow(rowIndex).createCell(3);
-            sheet.getRow(rowIndex).getCell(3).setCellStyle(bordered(workbook));
-            sheet.getRow(rowIndex).getCell(3).setCellValue(users.getStatus().name());
+                sheet.getRow(rowIndex).createCell(2);
+                sheet.getRow(rowIndex).getCell(2).setCellStyle(bordered(workbook));
+                sheet.getRow(rowIndex).getCell(2).setCellValue(users.getLastname());
 
-            sheet.getRow(rowIndex).createCell(4);
-            sheet.getRow(rowIndex).getCell(4).setCellStyle(bordered(workbook));
-            sheet.getRow(rowIndex).getCell(4).setCellValue(users.getLogin());
+                sheet.getRow(rowIndex).createCell(3);
+                sheet.getRow(rowIndex).getCell(3).setCellStyle(bordered(workbook));
+                sheet.getRow(rowIndex).getCell(3).setCellValue(users.getStatus().name());
 
-            sheet.getRow(rowIndex).createCell(5);
-            sheet.getRow(rowIndex).getCell(5).setCellStyle(bordered(workbook));
-            sheet.getRow(rowIndex).getCell(5).setCellValue(users.getDate());
+                sheet.getRow(rowIndex).createCell(4);
+                sheet.getRow(rowIndex).getCell(4).setCellStyle(bordered(workbook));
+                sheet.getRow(rowIndex).getCell(4).setCellValue(users.getLogin());
 
-            rowIndex++;
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
+                sheet.getRow(rowIndex).createCell(5);
+                sheet.getRow(rowIndex).getCell(5).setCellStyle(bordered(workbook));
+                sheet.getRow(rowIndex).getCell(5).setCellValue(dateFormat.format(users.getDate()));
+
+                rowIndex++;
+            }
         }
 
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        workbook.write(new FileOutputStream(file));
-//        byte[] base64 = Base64.encodeBase64(baos.toByteArray());
-
-//        baos.close();
+        workbook.write(new FileOutputStream("files/dbo/dbo.xlsx"));
         workbook.close();
-//        excelFile.close();
     }
-
 
     public CellStyle bordered(Workbook workbook) {
         CellStyle border = workbook.createCellStyle();
