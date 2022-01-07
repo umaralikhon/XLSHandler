@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ziraat_test
+    username: postgres
+    password: 1111
+  jpa:
+    generate-ddl: on
+    show-sql: on
+    hibernate:
+      ddl-auto: update
