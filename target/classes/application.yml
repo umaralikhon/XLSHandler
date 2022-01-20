@@ -8,3 +8,6 @@ spring:
     show-sql: on
     hibernate:
       ddl-auto: update
+
+server:
+  port: 8000

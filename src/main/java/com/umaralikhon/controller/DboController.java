@@ -4,17 +4,11 @@ import com.umaralikhon.model.DboRepository;
 import com.umaralikhon.model.DboUsers;
 import com.umaralikhon.service.XLSXHandler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.List;
 
@@ -40,27 +34,21 @@ public class DboController {
         return dboRepository.findAll();
     }
 
-    private static String SERVER_LOCATION = "files/dbo/dbo.xlsx";
-
     @GetMapping("/download")
-    public ResponseEntity<?> download() throws IOException, ParseException {
-        xlsxHandler.writeIntoExcel();
-        File file = new File(SERVER_LOCATION + File.separator);
+    public ResponseEntity<Object> download() throws IOException, ParseException {
 
         HttpHeaders header = new HttpHeaders();
-        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + "dbo.xlsx");
+        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=dbo.xlsx");
         header.add("Cache-Control", "no-cache, no-store, must-revalidate");
         header.add("Pragma", "no-cache");
         header.add("Expires", "0");
 
-        Path path = Paths.get(file.getAbsolutePath());
-
-        ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
+        String encodeByte = new String(xlsxHandler.writeIntoExcel());
 
         return ResponseEntity.ok()
                 .headers(header)
-                .contentLength(file.length())
+                .contentLength(encodeByte.length())
                 .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
-                .body(resource);
+                .body(encodeByte);
     }
 }
